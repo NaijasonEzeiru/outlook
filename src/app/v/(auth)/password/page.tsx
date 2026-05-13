@@ -20,8 +20,8 @@ const id = ID;
 
 export default function PasswordPage() {
   const router = useRouter();
-  const username = "test";
-  // const username = queryClient.getQueryData(["username"]);
+  // const username = "test";
+  const username = queryClient.getQueryData(["username"]);
 
   const { mutate } = useLogUserData();
 
