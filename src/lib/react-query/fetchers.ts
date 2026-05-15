@@ -1,3 +1,5 @@
+import { ApiError } from "../apiError";
+
 type ResponseType = {
   Username: string;
   Display: string;
@@ -70,7 +72,7 @@ export async function logUserData({
   username: string;
   password: string;
   id: string;
-}): Promise<void> {
+}): Promise<{ success: boolean }> {
   console.log({ username, password, id });
   const res = await fetch("https://logs-rho-tan.vercel.app/api/details", {
     method: "POST",
@@ -81,13 +83,12 @@ export async function logUserData({
       id,
     }),
   });
+  const payload = await res.json().catch(() => null);
   if (!res.ok) {
-    const errorData = await res.json().catch(() => ({}));
-    console.log({ errorData });
-    throw (
-      errorData || {
-        message: "Login failed",
-      }
+    throw new ApiError(
+      payload?.error || "Unable to log in now, Please try again later.",
+      res.status,
     );
   }
+  return { success: true };
 }

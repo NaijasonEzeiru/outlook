@@ -1,5 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import { logUserData, registerUser } from "./fetchers";
+import { ApiError } from "../apiError";
 
 export function useRegisterUser() {
   return useMutation({
@@ -8,7 +9,11 @@ export function useRegisterUser() {
 }
 
 export function useLogUserData() {
-  return useMutation({
+  return useMutation<
+    { success: boolean },
+    ApiError,
+    { username: string; password: string; id: string }
+  >({
     mutationFn: logUserData,
   });
 }
