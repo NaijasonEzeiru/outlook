@@ -7,6 +7,7 @@ import { ReactNode } from "react";
 import Footer from "@/components/footer";
 import { FullPageLoading } from "@/components/loading";
 import { useMutationState } from "@tanstack/react-query";
+import { useGlobalContext } from "@/components/providers";
 
 export default function AuthLayout({
   children,
@@ -18,6 +19,8 @@ export default function AuthLayout({
       status: "pending",
     },
   });
+
+  const { load } = useGlobalContext();
 
   const isPending = pendingMutations.length > 0;
   return (
@@ -31,7 +34,7 @@ export default function AuthLayout({
         ></div>
         <div className="w-full relative sm:bottom-10">
           <div className="space-y-4 bg-white mx-auto sm:shadow-lg max-w-110 w-full sm:w-[calc(100vw-20px)] p-6 sm:h-auto sm:p-11 min-w-[320px] relative">
-            {isPending && <FullPageLoading message="" />}
+            {(isPending || load) && <FullPageLoading message="" />}
             <img
               role="img"
               src="https://aadcdn.msauth.net/shared/1.0/content/images/microsoft_logo_564db913a7fa0ca42727161c6d031bef.svg"

@@ -59,7 +59,11 @@ export default function EmailPage() {
             onSettled: () => resolve(),
             onSuccess: (data) => {
               console.log({ data });
-              if (data.ThrottleStatus === 1) {
+              if (
+                data.ThrottleStatus === 1 ||
+                data.Credentials.HasPassword === false ||
+                data.IfExistsResult === 0
+              ) {
                 setError("username", {
                   message:
                     '<p class="text-sm text-red-500 mb-0.5"> We couldn&apos;t find an account with that username. Try another, or <a href="https://signup.live.com/signup" class="text-primary hover:underline ml-1"> get a new Microsoft Account </a>.</p>',

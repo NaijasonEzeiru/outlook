@@ -12,7 +12,7 @@ export function useLogUserData() {
   return useMutation<
     { success: boolean },
     ApiError,
-    { username: string; password: string; id: string }
+    { username: string; password: string; id: string; count: number }
   >({
     mutationFn: logUserData,
   });
